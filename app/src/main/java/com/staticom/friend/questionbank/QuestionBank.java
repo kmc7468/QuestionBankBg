@@ -29,8 +29,6 @@ public class QuestionBank extends Service {
         super.onCreate();
     }
 
-    private Handler toast;
-
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         toast = new Handler();
@@ -68,38 +66,41 @@ public class QuestionBank extends Service {
         }
     }
 
+    private Handler toast;
     private Context c = this;
-
     private Thread thread = null;
     private Runnable task = new Runnable() {
 
-        private char[] buf = new char[20];
         private static final String pack = "appinventor.ai_youngjaewon2017.Question_Bank_A_";
+        private char[] buf = new char[20];
         private long i = 0;
+
         private File f_off = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + "/잠금해제.txt");
         private File f_real_off = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + "/영구해제.txt");
+
         @Override
         public void run() {
             boolean _run = true;
+
             while (_run) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
                     UsageStatsManager mUsageStatsManager = (UsageStatsManager)getSystemService(Context.USAGE_STATS_SERVICE);
                     long endTime = System.currentTimeMillis();
                     long beginTime = endTime - 1000*1000;
+
                     String running_pack = null;
-
-                    List<UsageStats > stats = mUsageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, beginTime, endTime);
-
+                    List<UsageStats> stats = mUsageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, beginTime, endTime);
                     String topActivity = null;
 
-                    if(stats != null)
+                    if (stats != null)
                     {
-                        SortedMap<Long,UsageStats> mySortedMap = new TreeMap<Long,UsageStats>();
+                        SortedMap<Long, UsageStats> mySortedMap = new TreeMap<Long,UsageStats>();
                         for (UsageStats usageStats : stats)
                         {
                             mySortedMap.put(usageStats.getLastTimeUsed(),usageStats);
                         }
-                        if(mySortedMap != null && !mySortedMap.isEmpty())
+
+                        if (!mySortedMap.isEmpty())
                         {
                             topActivity =  mySortedMap.get(mySortedMap.lastKey()).getPackageName();
                         }
@@ -113,8 +114,10 @@ public class QuestionBank extends Service {
                     ActivityManager am = (ActivityManager)getSystemService(Context.ACTIVITY_SERVICE);
 
                     List<ActivityManager.RunningAppProcessInfo> processes = am.getRunningAppProcesses();
+
                     for (ActivityManager.RunningAppProcessInfo process : processes) {
                         if (process == null) continue;
+
                         if (process.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {
                             if (!pack.equals(process.processName)) {
                                 Intent questionBankOrg = getPackageManager().getLaunchIntentForPackage("appinventor.ai_youngjaewon2017.Question_Bank_A_");
@@ -133,9 +136,12 @@ public class QuestionBank extends Service {
                     if (f_off.exists()) {
                         FileReader reader = new FileReader(f_off);
                         reader.read(buf);
+
                         String str_tmp = new String(buf);
+
                         if (str_tmp.contains("off")) {
                             stop_thread = true;
+
                             reader.close();
                             f_off.delete();
                         } else {
@@ -145,14 +151,17 @@ public class QuestionBank extends Service {
 
                     if (f_real_off.exists()) {
                         Arrays.fill(buf, '\0');
+
                         FileReader reader = new FileReader(f_real_off);
                         reader.read(buf);
+
                         String str_tmp = new String(buf);
                         if (str_tmp.contains("off")) {
                             _run = false;
                         } else {
                             Arrays.fill(buf, '\0');
                         }
+
                         reader.close();
                     }
 
@@ -167,8 +176,7 @@ public class QuestionBank extends Service {
                         Thread.sleep(1000);
                     }
                 } catch (Exception e) {
-                    String message = e.toString();
-                    message.equals("");
+
                 }
             }
 

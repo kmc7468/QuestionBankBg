@@ -6,13 +6,6 @@
     android:layout_height="match_parent"
     tools:context="com.staticom.friend.questionbank.MainActivity">
 
-    <TextView
-        android:id="@+id/textView5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="\n(C) 2017. kmc7468 All rights reserved.\n김민찬 만듦\n이 앱은 문제은행 앱을 보조하기 위한 앱입니다."
-        app:layout_constraintTop_toBottomOf="@+id/textView4" />
-
     <Button
         android:id="@+id/button1"
         android:layout_width="383dp"

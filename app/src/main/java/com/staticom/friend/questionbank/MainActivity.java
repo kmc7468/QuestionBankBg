@@ -24,6 +24,8 @@ import javax.xml.transform.OutputKeys;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static Intent service = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,23 +44,15 @@ public class MainActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         switch (requestCode) {
             case 1:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // 승인됨
-                } else {
+            case 2:
+                if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                     moveTaskToBack(true);
                     finish();
                     android.os.Process.killProcess(android.os.Process.myPid());
                 }
                 break;
 
-            case 2: // PACKAGE_USAGE_STATS
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // 승인됨
-                } else {
-                    moveTaskToBack(true);
-                    finish();
-                    android.os.Process.killProcess(android.os.Process.myPid());
-                }
+            default:
                 break;
         }
     }
@@ -66,17 +60,23 @@ public class MainActivity extends AppCompatActivity {
     public void end(View view) {
         try {
             File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + "/영구해제.txt");
+
             if (file.exists()) {
                 FileReader reader = new FileReader(file);
+
                 char[] buf = new char[20];
                 reader.read(buf);
+
                 String str = new String(buf);
+
                 if (str.contains("off")) {
                     reader.close();
                     file.delete();
+
                     if (service != null) {
                         stopService(service);
                     }
+
                     android.os.Process.killProcess(android.os.Process.myPid());
                     return;
                 }
@@ -90,11 +90,10 @@ public class MainActivity extends AppCompatActivity {
             }
         } catch (Exception e) {
 
+        } finally {
+            Toast.makeText(getApplicationContext(), "종료에 실패했습니다. (오류가 발생했거나, 학부모 권한 없이 문제은행 앱이 종료되었습니다.)", Toast.LENGTH_SHORT).show();
         }
-        Toast.makeText(getApplicationContext(), "종료에 실패했습니다. (오류가 발생했거나, 학부모 권한 없이 문제은행 앱이 종료되었습니다.)", Toast.LENGTH_SHORT).show();
     }
-
-    private static Intent service = null;
 
     public void shell(View view) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -134,6 +133,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         service = new Intent(this, QuestionBank.class);
+
         startService(service);
         moveTaskToBack(true);
         finish();
