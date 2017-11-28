@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.SortedMap;
@@ -182,6 +183,17 @@ public class QuestionBank extends Service {
 
             File new_file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + "/작동중.txt");
             new_file.delete();
+
+            try {
+                File file_new = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + "/영구해제됨.txt");
+                file_new.createNewFile();
+
+                FileWriter fw = new FileWriter(file_new);
+                fw.write("off");
+                fw.close();
+            } catch (Exception e) {
+
+            }
 
             Intent intent = new Intent(c, MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

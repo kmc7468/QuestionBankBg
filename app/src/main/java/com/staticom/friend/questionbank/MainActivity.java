@@ -2,6 +2,7 @@ package com.staticom.friend.questionbank;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.AppOpsManager;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -19,6 +20,7 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileReader;
+import java.util.List;
 
 import javax.xml.transform.OutputKeys;
 
